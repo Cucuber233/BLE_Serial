@@ -7,6 +7,7 @@ import serial.tools.list_ports
 import tkinter as tk
 ##from tkinter.constants import (HORIZONTAL, VERTICAL, RIGHT, LEFT, X, Y, BOTH, BOTTOM, YES, NONE, END, CURRENT)
 import tkinter.messagebox
+from tkinter import filedialog
 
 STRGLO = ""    #读取的数据缓冲区
 total_Num = 0    #总包
@@ -46,7 +47,7 @@ class ImageDispose:
     def ImageBit(self):        
         for i in range(self.Range):
             #绿色
-            if self.image_data[i][0] == 0 and self.image_data[i][1] > 100 and self.image_data[i][2] == 0:
+            if self.image_data[i][0] == 0 and self.image_data[i][1] > 50 and self.image_data[i][2] == 0:
                 self.image_red_bit.append(1)
                 self.image_white_bit.append(1)
                 continue
@@ -171,12 +172,15 @@ class Application():
         #创建矩形区域，用于放置其他子组件
         self.frame_image_path = tk.Frame(self.root)
         self.frame_image_path.pack()
+        self.frame_image_path.config(bg = 'bisque')
         label05 = tk.Label(self.frame_image_path, text = "image_path:", bg = 'bisque')
-        label05.grid(row =3, column = 0, sticky = 'e') 
+        label05.grid(row = 1, column = 0, sticky = 'w') 
         self.image_path = tk.StringVar()
         self.image_path.set('C:/Users/13432/Desktop/bg_3.jpg')
-        self.image_path_input = tk.Entry(self.frame_image_path, textvariable = self.image_path, width = 38)
-        self.image_path_input.grid(row = 3, column = 1)
+        self.image_path_input = tk.Entry(self.frame_image_path, textvariable = self.image_path, width = 25)
+        self.image_path_input.grid(row = 1, column = 1)
+        self.btn_image = tk.Button(self.frame_image_path, text = "浏览", command = self.image_choose, width = 5, height = 1)
+        self.btn_image.grid(row = 1, column = 2 , sticky = 'w', padx = 9)
         label0B = tk.Label(self.root, text = "--------------------------------------------------------------", bg = 'bisque')
         label0B.pack()
         #======功能选择项====== 
@@ -360,8 +364,6 @@ class Application():
         global total_Num, current_Num
         global image_object
 
-        
-        
         x = [int(self.image_x.get())//256, int(self.image_x.get())%256]
         y = [int(self.image_y.get())//256, int(self.image_y.get())%256]
         
@@ -373,9 +375,18 @@ class Application():
                 mac.append(int(mac_str.encode(), 16))
                 mac_str = ''
                 
-        if int(self.image_type.get().encode(), 16) == 9 or int(self.image_type.get().encode(), 16) == 10 or int(self.image_type.get().encode(), 16) == 6 or int(self.image_type.get().encode(), 16) == 3:
-            total_Num = 0.5
-            current_Num = 1
+##        if (int(self.QRcodeSize.get()) > 0 and int(self.QRcodeSize.get()) < 8) or int(self.image_type.get().encode(), 16) == 9 or\
+##                           int(self.image_type.get().encode(), 16) == 10 or int(self.image_type.get().encode(), 16) == 6 or int(self.image_type.get().encode(), 16) == 3:
+##            total_Num = 0.5
+##            current_Num = 1
+        if self.window_type == '5':
+            if int(self.QRcodeSize.get()) > 0 and int(self.QRcodeSize.get()) < 8:
+                total_Num = 0.5
+                current_Num = 1
+            elif int(self.image_type.get().encode(),16) == 9 or\
+                           int(self.image_type.get().encode(), 16) == 10 or int(self.image_type.get().encode(), 16) == 6 or int(self.image_type.get().encode(), 16) == 3:
+                total_Num = 0.5
+                current_Num = 1               
         else:
             try:
                 image_object = ImageDispose(self.image_path.get())      ##图片导入
@@ -453,6 +464,8 @@ class Application():
                 first_data = self.first_data + image_object.red_byte[:200] + [0x00, 0xAA]
                 count = serial_object.DWritePort(first_data)
                 print("写入字节数：", count)
+
+        self.QRcodeSize = '0'
  
     def greet(self):
         if self.btn_port_flag == 0:
@@ -467,6 +480,11 @@ class Application():
             if  serial_object.ret == True:
                 serial_object.DClosePort()    #关闭串口
 ##            print(self.serialPort.get()[:5])
+
+    def image_choose(self):
+        pic_file = filedialog.askopenfilename(title = '选择图片', filetypes=[('jpeg', '*.jpeg'), ('png', '*.png'), ('jpg', '*.jpg')])
+        if pic_file != "":
+            self.image_path.set(pic_file)
         
 ###################################################################################################################### 
 ############################__Serial__################################################################################
