@@ -587,8 +587,7 @@ class Serial:
                             other_data = [0x57,0x43,0xD2,0x70,0x90,0xCD,0x30] + [0x00, total_Num*2] + \
                                 [0x00, current_Num] + image_object.red_byte[100*(current_Num-1):100*current_Num] + image_object.white_byte[100*(current_Num-1):100*current_Num] + [0x00,0xAA]
                         else:
-                            other_data = [0x57,0x43,image_object.Size - 100*(current_Num-1)+10,0x70,0x90,image_object.Size - 100*(current_Num-1)+5,0x30] + [0x00, total_Num*2] + \
-                                [0x00, current_Num] + image_object.red_byte[100*(current_Num-1):100*current_Num] + image_object.white_byte[100*(current_Num-1):100*current_Num] + [0x00,0xAA]
+                            other_data = [0x57,0x43,image_object.Size - 100*(current_Num-1)+10,0x70,0x90,image_object.Size - 100*(current_Num-1)+5,0x30] + [0x00, total_Num*2] + [0x00, current_Num] + image_object.red_byte[100*(current_Num-1):100*current_Num] + image_object.white_byte[100*(current_Num-1):100*current_Num] + [0x00,0xAA]
               
                     else:
                         if current_Num <= total_Num:                  #旧协议背景与前景
@@ -597,8 +596,7 @@ class Serial:
                                     [0x00,current_Num] + image_object.red_byte[200*(current_Num-1):200*current_Num] +  [0x00,current_Num]
 
                             elif image_object.Size - 200*(current_Num-1) <  200:                          ##一包不足200字节   
-                                other_data = [0x57,0x43,image_object.Size - 200*(current_Num-1)+10, 0x70,0x90, image_object.Size - 200*(current_Num-1)+5, 0x30] + [0x00,total_Num*2] + \
-                                    [0x00,current_Num] + image_object.red_byte[200*(current_Num-1):200*(current_Num-1)+(image_object.Size - 200*(current_Num-1))] + [0x00, current_Num]
+                                other_data = [0x57,0x43,image_object.Size - 200*(current_Num-1)+10, 0x70,0x90, image_object.Size - 200*(current_Num-1)+5, 0x30] + [0x00,total_Num*2] + [0x00,current_Num] + image_object.red_byte[200*(current_Num-1):200*(current_Num-1)+(image_object.Size - 200*(current_Num-1))] + [0x00, current_Num]
                             
                         elif current_Num > total_Num and current_Num <= total_Num*2:
                             if image_object.Size - 200*(current_Num-total_Num-1) >= 200:
@@ -606,9 +604,7 @@ class Serial:
                                     [0x00,current_Num] + image_object.white_byte[200*(current_Num-total_Num-1):200*(current_Num-total_Num)] +[0x00, current_Num]
 
                             elif image_object.Size - 200*(current_Num-total_Num-1) <  200:
-                                other_data = [0x57,0x43,image_object.Size - 200*(current_Num-total_Num-1)+10,0x70,0x90,image_object.Size - 200*(current_Num-total_Num-1)+5,0x30] + \
-                                                     [0x00,total_Num*2] + [0x00,current_Num] + image_object.white_byte[200*(current_Num-total_Num-1):200*(current_Num-total_Num) + \
-                                                            (image_object.Size - 200*(current_Num-total_Num-1))] +  [0x00, current_Num]                                                
+                                other_data = [0x57,0x43,image_object.Size - 200*(current_Num-total_Num-1)+10,0x70,0x90,image_object.Size - 200*(current_Num-total_Num-1)+5,0x30] +  [0x00,total_Num*2] + [0x00,current_Num] + image_object.white_byte[200*(current_Num-total_Num-1):200*(current_Num-total_Num) + (image_object.Size - 200*(current_Num-total_Num-1))] + [0x00, current_Num]                                                
 
                     if current_Num <= total_Num*2 and total_Num != 0.5:
                         self.DWritePort(other_data)
